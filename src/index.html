@@ -13,11 +13,15 @@
         <div id="tablero"></div>
         <br/>
         <br/>
+        <div id="ahorcado">
+          <img src="img/0.png">
+        </div>
+        <br>
         <br/>
         <h4>Ingresa una letra...</h4>
      
         <div class="casillaIngreso">            
-            <input type="text" name="nombre" maxlength="1" />
+            <input type="text" name="nombre" maxlength="1" onkeyup="this.value = this.value.toUpperCase();" />
         </div>
         <br/>
         <br/>
@@ -25,5 +29,6 @@
         <div id="status"></div>
 
   </body>
+  <script src="js/script.js"></script>
 </html>
-<script src="script.js"></script>
+
