@@ -1,6 +1,9 @@
 const palabrAdivinar = ingresarPalabra();
 let arrCoincidencias = [];
+let arrUsadas = [];
 let errados = 0;
+let vidas = 6;
+let aciertos = 0;
 
 const letra = document.querySelector('input');  
 letra.oninput = function(){  //oninput cada vez que el ususario escriba en el input
@@ -10,8 +13,11 @@ letra.oninput = function(){  //oninput cada vez que el ususario escriba en el in
 function ingresarPalabra(){
     const palabra = prompt("Ingresa una palabra para adivinar!");
     const uppercase = palabra.toUpperCase();
-    const arrPalabra = uppercase.split("");
-    //console.log(arrPalabra);
+    if(!/^[a-zA-Z]+$/.test(uppercase)) {
+        alert("Palabra no permitida.");
+        window.location.reload();
+    } else {
+        const arrPalabra = uppercase.split("");
     document.getElementById("tablero").innerHTML = `
         <table border="1">
             <tr>
@@ -19,8 +25,13 @@ function ingresarPalabra(){
             </tr>    
         </table>
     `;
+
+
+    
     return arrPalabra;
+    }
 };
+
 
 function creaTablero(arrPalabra){
     let tablero = "";
@@ -30,9 +41,9 @@ function creaTablero(arrPalabra){
     return tablero;
 };
 
-function soloLetras(cadena, palabrAdivinar){
+function soloLetras(cadena, palabrAdivinar,arrCoincidencias){
     const pattern = new RegExp('[a-zA-Z]'); //RegExp se utiliza para hacer coincidir texto con un patrón
-    console.log(pattern.test(cadena));
+    console.log(pattern.test(cadena)); //aber si coincide con el patron
     if(!pattern.test(cadena)){
         document.querySelector('input').value = ""; //vuelve a nada el valor del input
         document.getElementById("status").innerHTML = "Solo puedes ingresar letras!!!";
@@ -41,10 +52,16 @@ function soloLetras(cadena, palabrAdivinar){
         document.getElementById("tablero").innerHTML = `
         <table border="1">
             <tr>
-                ${buscarCoincidencia(cadena,palabrAdivinar)}    
+                ${buscarCoincidencia(cadena,palabrAdivinar,arrCoincidencias)}    
             </tr>    
         </table>
     `;
+
+        document.getElementById("ahorcado").innerHTML = `
+            <img src="img/${errados}.png">
+        `;
+
+
         return true;
     }
 };
@@ -52,69 +69,56 @@ function soloLetras(cadena, palabrAdivinar){
 function buscarCoincidencia(letra, arrPalabra){
     let tablero = "";
     let coincidencias = 0;
+
     arrPalabra.forEach(caracter => {            
         //console.log(caracter + letra);
-        if(caracter == letra){
-            tablero = tablero + "<td>"+ caracter +" </td>"; //imprime la tabla con la letra que si 
-            coincidencias = coincidencias + 1;
+        if (arrCoincidencias.includes(caracter)){
+            tablero = tablero + "<td style='background-color: #C5D8A4'>"+ caracter +" </td>"; //letra que ya está
+        }
+        else if(caracter == letra){
+            tablero = tablero + "<td style='background-color: #C5D8A4'>"+ caracter +" </td>"; //imprime la tabla con la letra que si
+            coincidencias += 1; 
+            aciertos +=1;
+            arrCoincidencias.push(caracter);
         }else{
             tablero = tablero + "<td> ? </td>";
         }
         leyendaCoincidencia(coincidencias);
     });
+
+    if(coincidencias==0){
+        errados++;
+        vidas-=1;
+    }
+
+    arrUsadas.push(letra);
+    console.log(arrUsadas);
+    victoria();
+    
     return tablero;
+    
 };
+
 
 function leyendaCoincidencia(coincidencias){
     if(coincidencias > 0){
         document.getElementById("status").innerHTML = `Hubo ${coincidencias} coincidencias!!!`;
-    }else{
-        document.getElementById("status").innerHTML = `No hubo coinciencias :(`;
+    }else {
+        document.getElementById("status").innerHTML = `No hubo coinciencias :( Quedan ${vidas} vidas.`;
     }
 };
 
-function ahorcado(errados){
-    switch(errados){
-        case 1:
-            document.getElementById("ahorcado").innerHTML = `
-            <img src="img/1.png">
-        `;
-        break;
+function victoria(){
 
-        case 2:
-            document.getElementById("ahorcado").innerHTML = `
-            <img src="img/2.png">
+    if(vidas==0){
+        document.getElementById("palabras").innerHTML = `
+        <h3> Perdiste :( </h3>
         `;
-        break;
-
-        case 3:
-            document.getElementById("ahorcado").innerHTML = `
-            <img src="img/3.png">
+    }
+    else if(aciertos == arrCoincidencias.lenght){
+        document.getElementById("palabras").innerHTML = `
+        <h3> GANASTE :D </h3>
         `;
-        break;
-
-        case 4:
-            document.getElementById("ahorcado").innerHTML = `
-            <img src="img/4.png">
-        `;
-        break;
-
-        case 5:
-            document.getElementById("ahorcado").innerHTML = `
-            <img src="img/5.png">
-        `;
-        break;
-
-        case 6:
-            document.getElementById("ahorcado").innerHTML = `
-            <img src="img/6.png">
-        `;
-        break;
-
-        default:
-            document.getElementById("ahorcado").innerHTML = `
-            <img src="img/0.png">
-        `;
-        break;
     }
 }
+
