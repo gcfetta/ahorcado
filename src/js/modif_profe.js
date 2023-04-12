@@ -2,12 +2,12 @@ const palabrAdivinar = ingresarPalabra();
 let arrCoincidencias = [];
 let arrUsadas = [];
 let errados = 0;
-let vidas = 5;
+let vidas = 6;
 let aciertos = 0;
 
 const letra = document.querySelector('input');  
 letra.oninput = function(){  //oninput cada vez que el ususario escriba en el input
-    soloLetras(letra.value.toUpperCase(), palabrAdivinar); //convierto las letras a mayuscula tmb
+    soloLetras(letra.value.toUpperCase(), aciertos, palabrAdivinar); //convierto las letras a mayuscula tmb
 };
 
 function ingresarPalabra(){
@@ -25,6 +25,9 @@ function ingresarPalabra(){
             </tr>    
         </table>
     `;
+
+
+    
     return arrPalabra;
     }
 };
@@ -38,7 +41,7 @@ function creaTablero(arrPalabra){
     return tablero;
 };
 
-function soloLetras(cadena, palabrAdivinar,arrCoincidencias){
+function soloLetras(cadena,arrCoincidencias, aciertos, palabrAdivinar){
     const pattern = new RegExp('[a-zA-Z]'); //RegExp se utiliza para hacer coincidir texto con un patrón
     console.log(pattern.test(cadena)); //aber si coincide con el patron
     if(!pattern.test(cadena)){
@@ -49,7 +52,7 @@ function soloLetras(cadena, palabrAdivinar,arrCoincidencias){
         document.getElementById("tablero").innerHTML = `
         <table border="1">
             <tr>
-                ${buscarCoincidencia(cadena,palabrAdivinar,arrCoincidencias)}    
+                ${buscarCoincidencia(cadena,arrCoincidencias, aciertos, palabrAdivinar)}    
             </tr>    
         </table>
     `;
@@ -63,27 +66,21 @@ function soloLetras(cadena, palabrAdivinar,arrCoincidencias){
     }
 };
 
-function buscarCoincidencia(letra, arrPalabra){
+function buscarCoincidencia(letra, aciertos, palabrAdivinar){
     let tablero = "";
     let coincidencias = 0;
-
-    arrPalabra.forEach(caracter => {
-        document.getElementById("usadas").innerHTML = `
-            <h3> ${arrUsadas} </h3>
-            `;
-
+    
+    palabrAdivinar.forEach(caracter => {            
+        //console.log(caracter + letra);
+        if (arrCoincidencias.includes(caracter)){
+            tablero = tablero + "<td style='background-color: #C5D8A4'>"+ caracter +" </td>"; //letra que ya está
+        }
         if(caracter == letra){
             tablero = tablero + "<td style='background-color: #C5D8A4'>"+ caracter +" </td>"; //imprime la tabla con la letra que si
             coincidencias++; 
             aciertos++;
             arrCoincidencias.push(caracter);
-        } else if (arrCoincidencias.includes(caracter)){
-            tablero = tablero + "<td style='background-color: #C5D8A4'>"+ caracter +" </td>"; //letra que ya está
-
-            // document.getElementById("usadas").innerHTML = `
-            // <h3> ${arrUsadas} </h3>
-            // `;
-
+        
         }else{
             tablero = tablero + "<td> ? </td>";
         }
@@ -92,12 +89,12 @@ function buscarCoincidencia(letra, arrPalabra){
 
     if(coincidencias==0){
         errados++;
-        vidas--;
+        vidas-=1;
     }
 
     arrUsadas.push(letra);
     console.log(arrUsadas);
-    victoria();
+    victoria(aciertos, palabrAdivinar);
     
     return tablero;
     
@@ -112,17 +109,19 @@ function leyendaCoincidencia(coincidencias){
     }
 };
 
-function victoria(){
-    if(vidas<0){
+function victoria(aciertos, palabrAdivinar){
+
+    if(vidas==0){
         document.getElementById("palabras").innerHTML = `
         <h3> Perdiste :( </h3>
-        <h4>La palabra era ${palabrAdivinar}</h4>
         `;
     }
-    else if(aciertos == palabrAdivinar.length){
+    console.log(palabrAdivinar.length);
+    console.log(aciertos);
+    if(aciertos == palabrAdivinar.length){
         document.getElementById("palabras").innerHTML = `
         <h3> GANASTE :D </h3>
-        <h4>La palabra era ${palabrAdivinar}</h4>
         `;
     }
 }
+
