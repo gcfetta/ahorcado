@@ -3,12 +3,22 @@ body{
     color: #534340;
     background-size: 100vw 100vh;
     background-color: #C5D8A4;
+    background-image: url(../img/wallpaper2.png);
     text-align: center;
     justify-content: center;
     align-items: center;
     font-family: verdana;
     display: flex;
     flex-direction: column;
+}
+
+h1{
+    text-align: center;
+    color: #534340;
+    /* background-color: #BB9981; */
+    border-style: double;
+    padding: 5px;
+    border-radius: 5px; 
 }
 
 .container{

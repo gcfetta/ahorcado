@@ -116,13 +116,13 @@ function victoria(){
     if(vidas<0){
         document.getElementById("palabras").innerHTML = `
         <h3> Perdiste :( </h3>
-        <h4>La palabra era ${palabrAdivinar}</h4>
+        <h4>La palabra era ${palabrAdivinar.join('')}</h4>
         `;
     }
     else if(aciertos == palabrAdivinar.length){
         document.getElementById("palabras").innerHTML = `
         <h3> GANASTE :D </h3>
-        <h4>La palabra era ${palabrAdivinar}</h4>
+        <h4>La palabra era ${palabrAdivinar.join('')}</h4>
         `;
     }
 }
